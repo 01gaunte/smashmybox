@@ -1,8 +1,9 @@
 <!--
-Version: v1.00
+Version: v2.00
 Last Updated: 2026-01-16
 Changelog:
-- v1.00 (2026-01-16): Initial document creation
+- v2.00 (2026-01-16): Major revision - Authoritative hosting strategy, serverless clarification, deployment discipline
+- v1.00 (2026-01-16): Initial document creation with basic infrastructure options
 
 Version Control Rules:
 - Major changes (X.00 → X+1.00): Strategic pivots, complete restructuring, scope changes
@@ -12,7 +13,7 @@ Version Control Rules:
 
 # PR0005 – Hosting & Infrastructure
 
-**Status:** Partially Complete (holding page live)
+**Status:** Active (Initial Deployment Complete)
 **Priority:** High
 **Dependencies:** PR0004 (payout logic influences architecture)
 
@@ -20,29 +21,230 @@ Version Control Rules:
 
 ## Objective
 
-Keep the stack simple, scalable, and cost-effective while supporting core functionality.
+Define hosting choices, scalability path, and deployment discipline. Keep the stack as simple as possible for as long as possible.
 
 ---
 
-## Current Infrastructure
+## 1. Guiding Principle
 
-### Holding Page (Live)
-- **Host:** Vercel (Free tier)
+**Keep the stack as simple as possible for as long as possible.**
+
+Only introduce infrastructure when the product *forces* us to.
+
+This project deliberately avoids premature backend complexity.
+
+---
+
+## 2. Current State (As-Is)
+
+The project is already deployed with:
+
+- **Source control:** GitHub (01gaunte/smashmybox)
+- **Hosting:** Vercel (Free tier)
 - **Domain:** smashmybox.com (Porkbun)
-- **Tech:** Static HTML/CSS/JavaScript
-- **Git:** GitHub (01gaunte/smashmybox)
+- **Frontend:** Static HTML / CSS (holding page)
+- **Backend:** None
+- **Payments:** None
+- **Persistent state:** None
 - **Deployment:** Automatic on push to main
 - **SSL:** Automatic via Vercel
 
-### Benefits
-- Zero cost
-- Global CDN
-- Instant deploys
-- No backend complexity
+**This is the correct setup for the current stage.**
 
 ---
 
-## MVP Architecture
+## 3. Initial Stack (Holding Page Phase)
+
+### What We Are Using
+- GitHub for version control
+- Vercel for deployment and hosting
+- Static assets only (HTML, CSS, images)
+
+### What We Are Explicitly NOT Using Yet
+- No database
+- No API
+- No authentication
+- No payment processing
+- No server processes
+
+### Why This Works
+- Zero operational overhead
+- Extremely fast deployments
+- Easy rollbacks
+- Free or near-free cost
+- Scales automatically for traffic spikes
+- No infrastructure decisions blocking progress
+
+---
+
+## 4. What "Serverless Functions" Mean (Clarified)
+
+**A serverless function is NOT an HTML page.**
+
+It is:
+- A small piece of backend code
+- Executed **only when triggered**
+- Automatically scaled
+- No server to manage or maintain
+
+### Examples of Future Use
+- Accepting a contribution request
+- Validating a payment intent
+- Updating a box's global state
+- Triggering a payout when a box is filled
+
+### On Vercel, These Are Typically
+- JavaScript / TypeScript functions
+- Deployed alongside the frontend
+- Invoked via HTTPS endpoints (e.g., `/api/contribute`)
+
+### Key Point
+> Serverless functions let us add backend logic *without* running a traditional server.
+
+---
+
+## 5. Planned Evolution (To-Be)
+
+When the product moves beyond a holding page, the stack evolves **incrementally**:
+
+### Phase 1 — Interactive Frontend
+- Static frontend remains on Vercel
+- UI becomes dynamic (React / Next.js)
+- Client-side state management
+- No money movement yet
+- No backend required
+
+**Timeline:** When UI design is ready
+
+### Phase 2 — Serverless Logic
+- Vercel Serverless Functions added
+- Functions handle:
+  - Box state reads
+  - Contribution submission validation
+  - Win detection
+  - State mutations
+- Still no traditional server
+
+**Timeline:** When game mechanics need server-side enforcement
+
+### Phase 3 — Payments
+- Third-party payment provider (Stripe recommended)
+- Payments handled **outside** core logic
+- Webhooks processed via serverless functions
+- Payment processor holds funds in escrow
+
+**Timeline:** When real money enters system (requires licensing)
+
+### Phase 4 — Persistence & Events
+- Database added only when required (PostgreSQL recommended)
+- Event-driven payout triggers
+- Clear separation:
+  - **Frontend** = experience
+  - **Functions** = rules
+  - **Payments** = external trust layer
+  - **Database** = authoritative state
+
+**Timeline:** When box history and user accounts needed
+
+---
+
+## 6. Scalability Philosophy
+
+### What Vercel Handles Automatically
+- Traffic spikes
+- CDN distribution (global edge network)
+- Global availability
+- HTTPS/SSL certificates
+- Automatic deployments
+- Preview environments for PRs
+
+### What Serverless Functions Provide
+- Horizontal scaling by default
+- No capacity planning required
+- Pay-per-execution pricing
+- No single point of failure
+
+### What We Explicitly Avoid (For Now)
+- Self-hosted servers
+- Long-running processes
+- Stateful backend services in V1
+- Container orchestration
+- Database until absolutely needed
+
+---
+
+## 7. Deployment Checklist (V1)
+
+For each deployment:
+- [ ] Changes committed to GitHub
+- [ ] Vercel build passes
+- [ ] Holding page renders correctly on desktop
+- [ ] Holding page renders correctly on mobile
+- [ ] No backend dependencies introduced accidentally
+- [ ] No breaking changes to existing URLs
+- [ ] Rollback path verified
+- [ ] DNS remains configured correctly
+
+---
+
+## 8. Hosting Decision Log
+
+### Decision: GitHub + Vercel for V1
+**Rationale:**
+- Already deployed and working
+- Zero friction
+- Industry-standard stack
+- Scales well into serverless backend later
+- Free tier sufficient for early stages
+- Strong Next.js integration for future phases
+
+**Alternatives Considered:**
+- Netlify: Similar to Vercel, but less Next.js-focused
+- Railway/Render: Requires more configuration, overkill for static
+- AWS/GCP/Azure: Far too complex for current needs
+
+**Revisit When:**
+- Money movement begins (licensing required)
+- Global state must be persisted (database needed)
+- Regulatory requirements demand segregation
+- Scale exceeds Vercel's free/paid tier limits
+
+---
+
+## 9. Non-Goals (Explicit)
+
+These are deliberately out of scope:
+
+- No dedicated servers
+- No container orchestration (Docker/Kubernetes)
+- No self-managed infrastructure
+- No early database commitments
+- No microservices architecture
+- No service mesh
+- No complex CI/CD pipelines (Vercel auto-deploy is sufficient)
+
+---
+
+## 10. Summary
+
+**Current State:**
+- GitHub + Vercel + Static HTML = Correct for holding page
+- Zero cost, zero complexity, fully deployed
+
+**Next Steps:**
+- Vercel remains hosting platform
+- Serverless functions provide backend logic when needed
+- Database added only when persistence required
+- Payment provider integrated when licensing allows
+
+**Key Insight:**
+> Vercel is **sufficient and correct** for holding page, early interactive prototypes, and initial game UI. Serverless functions provide a clean, low-risk path to backend logic **when needed**, without abandoning the existing stack.
+
+**Nothing more is required at this stage.**
+
+---
+
+## Original MVP Architecture (Reference)
 
 ### Frontend
 **Technology:** Next.js / React (or stay static)
