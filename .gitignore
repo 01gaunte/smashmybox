@@ -22,3 +22,9 @@ npm-debug.log*
 .env
 .env.local
 .env.*.local
+
+# Next.js
+app-src/.next/
+app-src/out/
+app-src/node_modules/
+app-src/.eslintrc.json
