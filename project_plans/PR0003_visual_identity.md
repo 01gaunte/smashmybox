@@ -1,8 +1,9 @@
 <!--
-Version: v1.00
+Version: v2.00
 Last Updated: 2026-01-16
 Changelog:
-- v1.00 (2026-01-16): Initial document creation
+- v2.00 (2026-01-16): Major addition - V1 Game Mechanics Specification with complete interaction rules
+- v1.00 (2026-01-16): Initial document creation with visual identity and design system
 
 Version Control Rules:
 - Major changes (X.00 → X+1.00): Strategic pivots, complete restructuring, scope changes
@@ -12,7 +13,7 @@ Version Control Rules:
 
 # PR0003 – Visual Identity & Box Design
 
-**Status:** In Progress (holding page completed)
+**Status:** In Progress (holding page completed, V1 mechanics defined)
 **Priority:** High
 **Dependencies:** PR0002 (user flow influences visual requirements)
 
@@ -20,7 +21,183 @@ Version Control Rules:
 
 ## Objective
 
-Create a strong, playful visual metaphor that makes the platform instantly recognizable and builds trust through familiar parcel/package imagery.
+Create a strong, playful visual metaphor that makes the platform instantly recognizable and builds trust through familiar parcel/package imagery. Define complete V1 game mechanics for implementation.
+
+---
+
+## V1 Game Mechanics Specification
+
+**Status:** Claude-Code Ready
+**Scope:** Core gameplay, UX rules, edge cases (no licensing or payments implementation)
+
+### 0. High-Level Concept
+
+SmashMyBox is a **deterministic, single-winner, shared prize box** game.
+
+- Each box has a **face value** (e.g. £10, £100)
+- Users deposit money ("coins") into a **hidden prize meter**
+- The box **pays out instantly** when the prize meter reaches the face value
+- Users never see progress; only the final smash event is revealed
+- Any excess contribution beyond the face value is **overshoot → house**
+- Platform also takes a small fixed edge; charity allocation may apply
+
+### 1. Boxes & Concurrency
+
+- Exactly **6 boxes** are visible and playable at all times
+- Each box has:
+  - Face value
+  - Associated cause/charity (name + logo)
+  - Cosmetic skin (visual/audio only)
+- All boxes share **identical mechanics**; cosmetics never affect outcomes
+
+### 2. Global State Model
+
+- Each box has **one authoritative global state**, shared by all users
+- State is stored server-side and mutated sequentially
+- No per-user or per-session illusion states
+
+**Box States:**
+1. `ACTIVE` - Currently accepting deposits
+2. `SMASHED` - Prize claimed, visible to all
+3. `ARCHIVED` - Moved to history
+4. `REPLACED` - New box in slot
+
+### 3. Deposits ("Coins")
+
+- Users may deposit **any monetary amount**
+- UX recommendation (non-binding):
+  *"Probably don't put in more than 100% of the box value 😉"*
+- Deposits are represented visually as "coins" regardless of amount
+
+#### Processing Rules
+- Deposits are processed **server-side, sequentially**, by confirmed timestamp
+- A deposit:
+  - Adds value to the hidden prize meter
+  - If it causes the prize meter to reach or exceed the face value:
+    - Only the required amount fills the prize
+    - Any excess becomes **overshoot → house**
+    - The depositor **wins the box**
+
+### 4. Feedback & Sensory Design
+
+#### Visual / Audio
+- **Binary feedback only**:
+  - No visible progress
+  - No "hot/cold", no bars, no numbers
+- **Deposit:**
+  - Subtle animation
+  - Muted, short sound
+- **Settling:**
+  - Silence
+- **Smash:**
+  - Loud, unmistakable sound
+  - Strong visual break
+  - Strong haptic feedback
+
+#### Haptics
+- Used **only**:
+  - On coin insertion (subtle)
+  - On smash (strong)
+- Never used to simulate progress
+
+### 5. Interaction Friction
+
+- After each deposit, the box enters a **short "settling" state**
+  - Deposits disabled during animation (1–3 seconds)
+  - Prevents spam and increases tension
+
+### 6. Winning & Visibility
+
+- Win events are **fully public**:
+  - Box visibly smashes for everyone
+  - Face value displayed
+  - Winner shown by alias (real name optional)
+- Winner receives private confirmation and receipt
+
+### 7. Post-Win Lifecycle
+
+- After smashing:
+  - Box remains visibly smashed for a duration
+  - Duration scales inversely with site/box activity
+- Then:
+  - Box is archived
+  - A new box replaces it in the same slot
+
+### 8. History & Transparency
+
+#### Public
+- A lightweight "Recent Smashes" list is visible to all:
+  - Alias
+  - Amount
+  - Timestamp
+- No contribution data
+- No analytics
+
+#### Contribution-Gated
+- Users who contributed to a box unlock richer history for that box:
+  - Winner alias
+  - Timestamp
+  - Final payout
+- Internal fill mechanics are **never** revealed
+
+### 9. Authentication
+
+- **Login required before any deposit**
+- Users choose an alias during onboarding
+- All actions are attributable to an authenticated account
+
+### 10. Fairness & Race Conditions
+
+- If multiple deposits arrive close together:
+  - The **first server-confirmed deposit** that completes the prize wins
+  - All others are processed against the updated state
+- No randomness is introduced
+
+### 11. Error Handling
+
+- All deposit attempts must resolve to:
+  - Explicit success, or
+  - Explicit failure
+- No ambiguous states
+- Clear retry paths provided
+
+### 12. Responsible-Play Nudges
+
+- Included in V1 as **light, non-blocking nudges**:
+  - Session-duration reminders
+  - Spend reminders
+  - Optional self-set limits
+- No forced lockouts by default
+- Tone is calm, respectful, non-judgmental
+
+### 13. Tone & Copy
+
+- Default tone: **dramatic, restrained, suspenseful**
+- Silence is used deliberately
+- Occasional playful copy allowed sparingly
+- Never informational or jokey during core tension moments
+
+### 14. Explicit Disclosures
+
+- House edge and overshoot mechanics are:
+  - Clearly explained before first deposit
+  - Always accessible via "How it works"
+  - Never hidden
+- Language is plain and friendly, not legalese
+
+### 15. Non-Goals (Explicitly Out of Scope for V1)
+
+- No visible odds
+- No progress indicators
+- No chat/comments
+- No mechanical box differences
+- No forced social features
+- No anonymous play
+
+### 16. Implementation Note for Claude
+
+**Do not invent mechanics.**
+If a behavior is not specified above, ask for clarification rather than assume.
 
 ---
 
