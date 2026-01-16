@@ -12,8 +12,8 @@ Each project (PR0001 → PR0011) has its own detailed planning document:
 
 - [PR0001 - Legal, Jurisdiction & Funding](PR0001_legal_regulatory.md) - v2.00
 - [PR0002 - User Roles & Core Flow](PR0002_user_roles_flow.md) - v1.00
-- [PR0003 - Visual Identity & Box Design](PR0003_visual_identity.md) - v1.00
-- [PR0004 - Contribution & Payout Logic](PR0004_payout_logic.md) - v1.00
+- [PR0003 - Visual Identity & Box Design](PR0003_visual_identity.md) - v2.00 ⭐
+- [PR0004 - Contribution & Payout Logic](PR0004_payout_logic.md) - v2.00 ⭐
 - [PR0005 - Hosting & Infrastructure](PR0005_hosting_infrastructure.md) - v1.00
 - [PR0006 - Accounts & Identity](PR0006_accounts_identity.md) - v1.00
 - [PR0007 - Charity & Cause Framework](PR0007_charity_framework.md) - v1.00
