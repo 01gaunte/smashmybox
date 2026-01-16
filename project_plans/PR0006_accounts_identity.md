@@ -1,3 +1,15 @@
+<!--
+Version: v1.00
+Last Updated: 2026-01-16
+Changelog:
+- v1.00 (2026-01-16): Initial document creation
+
+Version Control Rules:
+- Major changes (X.00 → X+1.00): Strategic pivots, complete restructuring, scope changes
+- Minor changes (X.YY → X.YY+0.01): Small edits, clarifications, task updates, notes
+-->
+
+
 # PR0006 – Accounts & Identity (MVP+)
 
 **Status:** Not Started

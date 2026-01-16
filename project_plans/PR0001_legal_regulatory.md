@@ -1,3 +1,15 @@
+<!--
+Version: v2.00
+Last Updated: 2026-01-16
+Changelog:
+- v2.00 (2026-01-16): Major expansion - added jurisdiction analysis, Malta decision, funding strategy, strategic pause rationale
+- v1.00 (2026-01-16): Initial document creation with basic legal framework
+
+Version Control Rules:
+- Major changes (X.00 → X+1.00): Strategic pivots, complete restructuring, scope changes
+- Minor changes (X.YY → X.YY+0.01): Small edits, clarifications, task updates, notes
+-->
+
 # PR0001 – Legal, Jurisdiction & Funding
 
 **Status:** On Hold (Concept Validated)
